@@ -204,8 +204,6 @@ interface HistoricalProduct {
 
 export default function EventControlPro() {
   // Estados existentes
-  const [showWelcome, setShowWelcome] = useState(true)
-  const [hasExistingEvents, setHasExistingEvents] = useState(false)
   const [activeTab, setActiveTab] = useState<'dashboard' | 'ingressos' | 'bar' | 'loja' | 'relatorio' | 'historico'>('dashboard')
   const [darkMode, setDarkMode] = useState(false)
   const [showCalculator, setShowCalculator] = useState(false)
@@ -292,79 +290,6 @@ export default function EventControlPro() {
 
   const formatNumber = (value: number) => {
     return value.toLocaleString('pt-BR')
-  }
-
-  // Função para iniciar novo evento
-  const startNewEvent = () => {
-    // Zerar todos os dados
-    setProducts([])
-    setSales([])
-    setExpenses([])
-    setRevenues([])
-    setTicketInfo({
-      currentTicketPrice: 0,
-      ticketsSold: 0,
-      eventTotalCost: 0,
-      month1Sold: 0,
-      month2Sold: 0,
-      month3Sold: 0
-    })
-    setExpenseCategories([
-      {
-        id: '1',
-        name: 'Decoração',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '2',
-        name: 'Marketing',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '3',
-        name: 'Logística',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '4',
-        name: 'Passagem Aérea',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '5',
-        name: 'Artista',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '6',
-        name: 'Hotel',
-        expanded: false,
-        items: []
-      },
-      {
-        id: '7',
-        name: 'Alimentação',
-        expanded: false,
-        items: []
-      }
-    ])
-    setUndoHistory([])
-    setRedoHistory([])
-    setHistoricalEvents([])
-    
-    setShowWelcome(false)
-    addNotification('success', 'Novo Evento', 'Sistema zerado! Agora você pode inserir os dados do seu evento.')
-  }
-
-  // Função para acessar eventos existentes
-  const accessExistingEvents = () => {
-    setShowWelcome(false)
-    addNotification('info', 'Eventos Carregados', 'Seus eventos existentes foram carregados com sucesso!')
   }
 
   // Função para zerar todos os dados - CORRIGIDA
@@ -552,10 +477,6 @@ export default function EventControlPro() {
     if (savedData.darkMode) setDarkMode(JSON.parse(savedData.darkMode))
     if (savedData.undoHistory) setUndoHistory(JSON.parse(savedData.undoHistory))
     if (savedData.historicalEvents) setHistoricalEvents(JSON.parse(savedData.historicalEvents))
-
-    // Verificar se há dados existentes
-    const hasData = savedData.products || savedData.sales || savedData.expenses || savedData.ticketInfo || savedData.historicalEvents
-    setHasExistingEvents(!!hasData)
   }, [])
 
   // Save to localStorage whenever data changes
@@ -1130,140 +1051,6 @@ export default function EventControlPro() {
   }
 
   const themeClasses = darkMode ? 'dark bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900' : 'bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50'
-
-  // Tela de Boas-vindas
-  if (showWelcome) {
-    return (
-      <div className={`min-h-screen transition-all duration-500 ${themeClasses} relative overflow-hidden flex items-center justify-center`}>
-        {/* Animated Background Elements */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto p-6 relative z-10">
-          <div className={`${darkMode ? 'bg-gray-800/80' : 'bg-white/80'} backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-white/20 text-center`}>
-            {/* Logo e Título */}
-            <div className="flex items-center justify-center gap-4 mb-6">
-              <div className="p-4 bg-gradient-to-br from-purple-500 to-pink-600 rounded-3xl shadow-lg animate-pulse">
-                <Rocket className="w-12 h-12 text-white" />
-              </div>
-              <h1 className={`text-4xl lg:text-6xl font-bold bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent animate-gradient`}>
-                EventControl Pro
-              </h1>
-            </div>
-            
-            <p className={`text-xl mb-4 ${darkMode ? 'text-gray-300' : 'text-gray-600'} flex items-center justify-center gap-2`}>
-              <Sparkles className="w-6 h-6 text-purple-500" />
-              Sistema de Gestão de Eventos
-            </p>
-
-            <p className={`text-lg mb-8 ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-              Gestão Completa de Eventos com Analytics Avançados e Comparativos Históricos
-            </p>
-
-            {/* Opções de Início */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              {/* Iniciar Novo Evento */}
-              <div className={`${darkMode ? 'bg-gray-700/50' : 'bg-gradient-to-br from-green-50 to-emerald-50'} p-6 rounded-2xl border-2 border-dashed ${darkMode ? 'border-green-400/30' : 'border-green-300'} hover:border-green-500 transition-all duration-300 group cursor-pointer`}
-                   onClick={startNewEvent}>
-                <div className="flex flex-col items-center text-center">
-                  <div className="p-4 bg-gradient-to-r from-green-500 to-emerald-600 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Play className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className={`text-xl font-bold mb-2 ${darkMode ? 'text-green-400' : 'text-green-700'}`}>
-                    Iniciar Novo Evento
-                  </h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                    Comece do zero com um sistema limpo para inserir os dados do seu evento
-                  </p>
-                  <div className="flex items-center gap-2 text-green-600">
-                    <Sparkles className="w-4 h-4" />
-                    <span className="text-sm font-medium">Sistema Zerado</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Acessar Eventos Existentes */}
-              <div className={`${darkMode ? 'bg-gray-700/50' : 'bg-gradient-to-br from-blue-50 to-indigo-50'} p-6 rounded-2xl border-2 border-dashed ${hasExistingEvents ? (darkMode ? 'border-blue-400/30' : 'border-blue-300') : 'border-gray-300'} ${hasExistingEvents ? 'hover:border-blue-500 cursor-pointer' : 'opacity-50 cursor-not-allowed'} transition-all duration-300 group`}
-                   onClick={hasExistingEvents ? accessExistingEvents : undefined}>
-                <div className="flex flex-col items-center text-center">
-                  <div className={`p-4 rounded-2xl mb-4 group-hover:scale-110 transition-transform duration-300 ${hasExistingEvents ? 'bg-gradient-to-r from-blue-500 to-indigo-600' : 'bg-gray-400'}`}>
-                    <FolderOpen className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className={`text-xl font-bold mb-2 ${hasExistingEvents ? (darkMode ? 'text-blue-400' : 'text-blue-700') : 'text-gray-500'}`}>
-                    Acessar Eventos Existentes
-                  </h3>
-                  <p className={`text-sm ${darkMode ? 'text-gray-300' : 'text-gray-600'} mb-4`}>
-                    {hasExistingEvents 
-                      ? 'Continue trabalhando com os dados salvos anteriormente'
-                      : 'Nenhum evento encontrado no sistema'
-                    }
-                  </p>
-                  <div className={`flex items-center gap-2 ${hasExistingEvents ? 'text-blue-600' : 'text-gray-400'}`}>
-                    <History className="w-4 h-4" />
-                    <span className="text-sm font-medium">
-                      {hasExistingEvents ? 'Dados Salvos' : 'Sem Dados'}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Recursos Destacados */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-              {[
-                { icon: History, label: 'Histórico', color: 'from-cyan-500 to-blue-600' },
-                { icon: BarChart3, label: 'Analytics', color: 'from-purple-500 to-pink-600' },
-                { icon: Coffee, label: 'Gestão Bar', color: 'from-orange-500 to-red-600' },
-                { icon: ShoppingCart, label: 'Gestão Loja', color: 'from-green-500 to-emerald-600' }
-              ].map((feature, index) => (
-                <div key={index} className={`${darkMode ? 'bg-gray-700/30' : 'bg-white/50'} p-4 rounded-xl text-center group hover:scale-105 transition-all duration-300`}>
-                  <div className={`p-3 bg-gradient-to-r ${feature.color} rounded-lg mb-2 mx-auto w-fit group-hover:rotate-12 transition-transform duration-300`}>
-                    <feature.icon className="w-5 h-5 text-white" />
-                  </div>
-                  <span className={`text-xs font-medium ${darkMode ? 'text-gray-300' : 'text-gray-700'}`}>
-                    {feature.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-
-            {/* Botões de Configurações */}
-            <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={`p-3 rounded-xl transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl ${
-                  darkMode 
-                    ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-gray-900' 
-                    : 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white'
-                }`}
-              >
-                {darkMode ? 
-                  <Sun className="w-5 h-5" /> : 
-                  <Moon className="w-5 h-5" />
-                }
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Add custom CSS for animations */}
-        <style jsx>{`
-          @keyframes gradient {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
-          
-          .animate-gradient {
-            background-size: 200% 200%;
-            animation: gradient 3s ease infinite;
-          }
-        `}</style>
-      </div>
-    )
-  }
 
   return (
     <div className={`min-h-screen transition-all duration-500 ${themeClasses} relative overflow-hidden`}>
